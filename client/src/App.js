@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 function App() {
@@ -10,9 +10,18 @@ function App() {
     user,
   } = useAuth0();
 
-  const callBackend = async () => {
+  const [subscriptionData, setSubscriptionData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Function to check subscription status
+  const checkSubscription = async () => {
+    if (!isAuthenticated) return;
+
+    setError(null);
+    setLoading(true);
+
     try {
-      // Get the Auth0 token for accessing the management API
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://dev-uuzc8f4uhchmjfcb.us.auth0.com/api/v2/',
@@ -20,7 +29,6 @@ function App() {
         },
       });
 
-      // Call backend
       const res = await fetch(
         `${process.env.REACT_APP_API_SERVER_URL}/check-subscriber`,
         {
@@ -31,48 +39,106 @@ function App() {
       );
 
       const data = await res.json();
-      console.log('Backend response:', data);
-
-      if (data.isSubscribed) {
-        alert('✅ You are subscribed to HottestPianoSongs channel!');
-      } else {
-        alert(
-          '❌ You are not subscribed to HottestPianoSongs channel. Please subscribe to support us!'
-        );
-      }
+      setSubscriptionData(data);
     } catch (err) {
       console.error(err);
-      alert('Failed to call backend');
+      setError('Failed to check subscription status. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Check subscription status when user authenticates
+  useEffect(() => {
+    if (isAuthenticated) {
+      checkSubscription();
+    }
+  }, [isAuthenticated]);
 
   return (
     <div style={{ padding: 40 }}>
       {!isAuthenticated && (
-        <button
-          onClick={() =>
-            loginWithRedirect({
-              authorizationParams: {
-                scope:
-                  'openid profile email https://www.googleapis.com/auth/youtube.readonly',
-              },
-            })
-          }
-        >
-          Log in with Google
-        </button>
+        <div className="login-container">
+          <h1>Welcome to Hottest Piano Songs</h1>
+          <p>Please log in with Google to access piano sheet music.</p>
+          <button
+            onClick={() =>
+              loginWithRedirect({
+                authorizationParams: {
+                  scope:
+                    'openid profile email https://www.googleapis.com/auth/youtube.readonly',
+                },
+              })
+            }
+          >
+            Log in with Google
+          </button>
+        </div>
       )}
 
       {isAuthenticated && (
-        <>
-          <h2>Welcome, {user.name}</h2>
-          <button onClick={() => logout({ returnTo: window.location.origin })}>
-            Log out
-          </button>
-          <button onClick={callBackend} style={{ marginLeft: 10 }}>
-            Check YouTube Subscription
-          </button>
-        </>
+        <div className="content-container">
+          <div className="header">
+            <h2>Welcome, {user.name}</h2>
+            <button
+              onClick={() =>
+                logout({
+                  logoutParams: {
+                    returnTo: window.location.origin,
+                  },
+                })
+              }
+            >
+              Log out
+            </button>
+          </div>
+
+          {loading && <p>Checking subscription status...</p>}
+
+          {error && <p className="error">{error}</p>}
+
+          {subscriptionData && !loading && (
+            <div className="subscription-content">
+              {subscriptionData.isSubscribed ? (
+                <div className="sheet-music">
+                  <h3>🎵 Your Piano Sheet Music</h3>
+                  <div className="sheet-links">
+                    {subscriptionData.pianoSheetLinks.map((sheet, index) => (
+                      <a
+                        key={index}
+                        href={sheet.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="sheet-link"
+                      >
+                        {sheet.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="subscribe-prompt">
+                  <h3>📺 Subscribe to Access Sheet Music</h3>
+                  <p>
+                    Please subscribe to our YouTube channel to access the piano
+                    sheet music!
+                  </p>
+                  <a
+                    href={subscriptionData.channelUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="youtube-button"
+                  >
+                    Subscribe to our YouTube Channel
+                  </a>
+                  <button onClick={checkSubscription} className="check-button">
+                    I've Subscribed - Check Again
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

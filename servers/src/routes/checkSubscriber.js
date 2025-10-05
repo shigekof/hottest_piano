@@ -125,10 +125,28 @@ router.get('/check-subscriber', checkJwt, async (req, res) => {
         }
       : null;
 
+    // Construct the channel URL
+    const channelUrl = `https://www.youtube.com/channel/${channelId}`;
+
+    // Add your piano sheet links here
+    const pianoSheetLinks = [
+      {
+        title: 'Sheet Music 1',
+        url: 'https://example.com/sheet1.pdf',
+      },
+      {
+        title: 'Sheet Music 2',
+        url: 'https://example.com/sheet2.pdf',
+      },
+      // Add more sheet music links as needed
+    ];
+
     res.json({
       isSubscribed,
       subscriptionDetails,
       channelId,
+      channelUrl,
+      pianoSheetLinks: isSubscribed ? pianoSheetLinks : null,
     });
   } catch (err) {
     console.error('Error in route handler:', err);
