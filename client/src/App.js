@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import GoogleSignInButton from './components/GoogleSignInButton';
 
-import './App.css';
-
 function App() {
   const {
     loginWithRedirect,
@@ -59,16 +57,18 @@ function App() {
   }, [isAuthenticated]);
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       {!isAuthenticated ? (
-        <div className="login-container">
-          <div className="header">
-            <h1>🎹 Hottest Piano Songs</h1>
-            <p>
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+              🎹 Hottest Piano Songs
+            </h1>
+            <p className="text-lg text-gray-600">
               Join our community and get access to exclusive piano sheet music
             </p>
           </div>
-          <div>
+          <div className="mt-8">
             <GoogleSignInButton
               onClick={() =>
                 loginWithRedirect({
