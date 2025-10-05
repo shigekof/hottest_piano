@@ -15,6 +15,14 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const pianoSheetLinks = [
+    {
+      title: 'PLEAD LMS Piano Sheet Music',
+      url: 'https://flat.io/score/687c2eead29f873ce2e3c862-plead?sharingKey=8f5c896c4af6fdf769c53735df94ded2ca2edb0bd1fb7bb6ac9f0f949e252f64efa3c45a6b0b5925e39a24c3cec4bbef7ba38bb6615dd4a0d9980a5d58e7a014',
+    },
+    // Add more sheet music links as needed
+  ];
+
   // Function to check subscription status
   const checkSubscription = async () => {
     if (!isAuthenticated) return;
@@ -62,7 +70,7 @@ function App() {
         <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
           <div className="text-center space-y-4">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              🎹 Hottest Piano Songs
+              🎹 Hottest Piano Sheets
             </h1>
             <p className="text-lg text-gray-600">
               Join our community and get access to exclusive piano sheet music
@@ -85,7 +93,7 @@ function App() {
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
           <div className="border-b border-gray-200 p-6 flex justify-between items-center">
             <h2 className="text-2xl font-semibold text-gray-900">
-              Welcome back, {user.name.split(' ')[0]}! 👋
+              🎹 Hottest Piano Sheets
             </h2>
             <button
               onClick={() =>
@@ -118,11 +126,8 @@ function App() {
               <div className="space-y-6">
                 {subscriptionData.isSubscribed ? (
                   <div className="bg-gray-50 rounded-lg p-6">
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-6">
-                      🎵 Your Piano Sheet Music
-                    </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {subscriptionData.pianoSheetLinks.map((sheet, index) => (
+                      {pianoSheetLinks.map((sheet, index) => (
                         <a
                           key={sheet.url}
                           href={sheet.url}
@@ -153,7 +158,7 @@ function App() {
                 ) : (
                   <div className="text-center bg-gray-50 rounded-lg p-8">
                     <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                      🎵 Access Premium Sheet Music
+                      🎵 Access Hottest Piano Sheets
                     </h3>
                     <p className="text-gray-600 mb-6 max-w-lg mx-auto">
                       Subscribe to our YouTube channel to unlock your exclusive
