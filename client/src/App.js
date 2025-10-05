@@ -18,7 +18,8 @@ function App() {
   const pianoSheetLinks = [
     {
       title: 'PLEAD LMS Piano Sheet Music',
-      url: 'https://flat.io/score/687c2eead29f873ce2e3c862-plead?sharingKey=8f5c896c4af6fdf769c53735df94ded2ca2edb0bd1fb7bb6ac9f0f949e252f64efa3c45a6b0b5925e39a24c3cec4bbef7ba38bb6615dd4a0d9980a5d58e7a014',
+      url: '/assets/sheets/plead.pdf',
+      downloadName: 'plead-piano-sheet.pdf',
     },
     // Add more sheet music links as needed
   ];
@@ -128,30 +129,78 @@ function App() {
                   <div className="bg-gray-50 rounded-lg p-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {pianoSheetLinks.map((sheet, index) => (
-                        <a
+                        <div
                           key={sheet.url}
-                          href={sheet.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                          className="p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200 space-y-4"
                         >
-                          <svg
-                            className="w-6 h-6 text-indigo-600 mr-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
-                            />
-                          </svg>
-                          <span className="text-gray-700 font-medium">
-                            {sheet.title}
-                          </span>
-                        </a>
+                          <div className="flex items-center">
+                            <svg
+                              className="w-8 h-8 text-indigo-600 mr-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                              />
+                            </svg>
+                            <h3 className="text-lg font-medium text-gray-900">
+                              {sheet.title}
+                            </h3>
+                          </div>
+                          <div className="flex gap-3">
+                            <a
+                              href={sheet.url}
+                              download={sheet.downloadName}
+                              className="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 border border-transparent rounded-md hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                />
+                              </svg>
+                              Download
+                            </a>
+                            <a
+                              href={sheet.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                              View PDF
+                            </a>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
