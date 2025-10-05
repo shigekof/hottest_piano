@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import GoogleSignInButton from './components/GoogleSignInButton';
+
+import './App.css';
 
 function App() {
   const {
@@ -56,88 +59,134 @@ function App() {
   }, [isAuthenticated]);
 
   return (
-    <div style={{ padding: 40 }}>
-      {!isAuthenticated && (
+    <div className="app-container">
+      {!isAuthenticated ? (
         <div className="login-container">
-          <h1>Welcome to Hottest Piano Songs</h1>
-          <p>Please log in with Google to access piano sheet music.</p>
-          <button
-            onClick={() =>
-              loginWithRedirect({
-                authorizationParams: {
-                  scope:
-                    'openid profile email https://www.googleapis.com/auth/youtube.readonly',
-                },
-              })
-            }
-          >
-            Log in with Google
-          </button>
-        </div>
-      )}
-
-      {isAuthenticated && (
-        <div className="content-container">
           <div className="header">
-            <h2>Welcome, {user.name}</h2>
+            <h1>🎹 Hottest Piano Songs</h1>
+            <p>
+              Join our community and get access to exclusive piano sheet music
+            </p>
+          </div>
+          <div>
+            <GoogleSignInButton
+              onClick={() =>
+                loginWithRedirect({
+                  authorizationParams: {
+                    scope:
+                      'openid profile email https://www.googleapis.com/auth/youtube.readonly',
+                  },
+                })
+              }
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="border-b border-gray-200 p-6 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Welcome back, {user.name.split(' ')[0]}! 👋
+            </h2>
             <button
               onClick={() =>
                 logout({
                   logoutParams: {
-                    returnTo: window.location.origin,
+                    returnTo: `${window.location.origin}${window.location.pathname}`,
                   },
                 })
               }
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
             >
-              Log out
+              Sign Out
             </button>
           </div>
 
-          {loading && <p>Checking subscription status...</p>}
+          <div className="p-6">
+            {loading && (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
+              </div>
+            )}
 
-          {error && <p className="error">{error}</p>}
+            {error && (
+              <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6">
+                {error}
+              </div>
+            )}
 
-          {subscriptionData && !loading && (
-            <div className="subscription-content">
-              {subscriptionData.isSubscribed ? (
-                <div className="sheet-music">
-                  <h3>🎵 Your Piano Sheet Music</h3>
-                  <div className="sheet-links">
-                    {subscriptionData.pianoSheetLinks.map((sheet, index) => (
+            {subscriptionData && !loading && (
+              <div className="space-y-6">
+                {subscriptionData.isSubscribed ? (
+                  <div className="bg-gray-50 rounded-lg p-6">
+                    <h3 className="text-2xl font-semibold text-gray-900 mb-6">
+                      🎵 Your Piano Sheet Music
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {subscriptionData.pianoSheetLinks.map((sheet, index) => (
+                        <a
+                          key={sheet.url}
+                          href={sheet.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                        >
+                          <svg
+                            className="w-6 h-6 text-indigo-600 mr-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                            />
+                          </svg>
+                          <span className="text-gray-700 font-medium">
+                            {sheet.title}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center bg-gray-50 rounded-lg p-8">
+                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+                      🎵 Access Premium Sheet Music
+                    </h3>
+                    <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+                      Subscribe to our YouTube channel to unlock your exclusive
+                      piano sheet music collection!
+                    </p>
+                    <div className="space-y-4">
                       <a
-                        key={index}
-                        href={sheet.url}
+                        href={subscriptionData.channelUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="sheet-link"
+                        className="inline-flex items-center px-6 py-3 bg-youtube hover:bg-youtube-hover text-white font-medium rounded-lg transition-all duration-200 hover:-translate-y-1"
                       >
-                        {sheet.title}
+                        <svg
+                          className="w-6 h-6 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                        </svg>
+                        Subscribe to our YouTube Channel
                       </a>
-                    ))}
+                      <button
+                        onClick={checkSubscription}
+                        className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-200 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        I've Subscribed - Check Again
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="subscribe-prompt">
-                  <h3>📺 Subscribe to Access Sheet Music</h3>
-                  <p>
-                    Please subscribe to our YouTube channel to access the piano
-                    sheet music!
-                  </p>
-                  <a
-                    href={subscriptionData.channelUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="youtube-button"
-                  >
-                    Subscribe to our YouTube Channel
-                  </a>
-                  <button onClick={checkSubscription} className="check-button">
-                    I've Subscribed - Check Again
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

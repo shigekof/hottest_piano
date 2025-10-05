@@ -10,7 +10,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
       authorizationParams={{
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}${window.location.pathname}`,
         audience: 'https://dev-uuzc8f4uhchmjfcb.us.auth0.com/api/v2/',
         scope: 'openid profile email',
         connection: 'google-oauth2',
